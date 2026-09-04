@@ -1,134 +1,85 @@
 import type { Metadata } from "next";
-import { EventsList } from "@/components/events-list";
-import { EventFlyer } from "@/components/event-flyer";
-import { Ornament } from "@/components/ornament";
-import { RsvpModal } from "@/components/rsvp-modal";
-import { getUpcoming, getPast } from "@/lib/events";
-import {
-  FLYER_SRC,
-  FLYER_ALT,
-  RSVP_OPEN,
-  RSVP_GOOGLE_FORM_URL,
-  RSVP_EVENT_LABEL,
-} from "@/lib/upcoming";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { EventCard } from "@/components/event-card";
+import { PageHeader, EmptyState } from "@/components/page-header";
+import { getUpcoming } from "@/lib/events";
+import { SUPPORT_EMAIL } from "@/lib/commerce-config";
 
 export const metadata: Metadata = {
-  title: "Events",
+  title: "Upcoming Events",
   description:
-    "Upcoming and past concerts presented by Raaga Sudha Sabha — featuring world-class Indian Classical artists.",
+    "Upcoming concerts presented by Raaga Sudha Sabha — featuring world-class Indian Classical artists.",
 };
 
-export default function EventsPage() {
+export default function UpcomingEventsPage() {
   const upcoming = getUpcoming();
-  const past = getPast();
-  const hasFlyer = !!FLYER_SRC;
 
   return (
     <>
       <PageHeader
         kicker="Concerts & Festivals"
-        title="Events"
+        title="Upcoming Events"
         sub="Concerts, festivals and workshops featuring world-class Indian Classical artists."
       />
 
-      {/* UPCOMING — flyer-driven */}
       <section className="bg-cream-deep/30">
         <div className="container-edge py-14 md:py-20">
           <div className="flex items-baseline justify-between gap-6">
-            <h2 className="font-display text-display-md text-maroon">Upcoming</h2>
-          </div>
-
-          <div className="mt-8">
-            {hasFlyer ? (
-              <div className="grid gap-10 lg:grid-cols-12">
-                <div className="lg:col-span-7">
-                  <EventFlyer src={FLYER_SRC!} alt={FLYER_ALT} />
-                </div>
-                <div className="lg:col-span-5">
-                  <p className="kicker">Next on Stage</p>
-                  <h3 className="mt-3 font-display text-3xl text-maroon md:text-4xl">
-                    Our next concert
-                  </h3>
-                  <Ornament className="mt-5 h-3 w-24 text-brand-purple/70" />
-                  <p className="mt-6 text-lg leading-relaxed text-ink/85">
-                    Click the flyer for a full-size view with all the details
-                    on artists, programme, date, venue and tickets.
-                  </p>
-                  {RSVP_OPEN && (
-                    <div className="mt-6">
-                      <RsvpModal
-                        formUrl={RSVP_GOOGLE_FORM_URL}
-                        eventLabel={RSVP_EVENT_LABEL}
-                      />
-                    </div>
-                  )}
-                  <p className="mt-6 text-sm text-muted">
-                    For partnership or press enquiries, write to{" "}
-                    <a className="link-purple" href="mailto:info@raagasudhasabha.org">
-                      info@raagasudhasabha.org
-                    </a>
-                    .
-                  </p>
-                </div>
-              </div>
-            ) : upcoming.length > 0 ? (
-              <EventsList events={upcoming} />
-            ) : (
-              <EmptyState message="The next concert is being announced. Sign up below for the newsletter to be the first to know." />
+            <h2 className="font-display text-display-md text-maroon">
+              On our stage
+            </h2>
+            {upcoming.length > 0 && (
+              <span className="smallcaps text-muted">
+                {upcoming.length}{" "}
+                {upcoming.length === 1 ? "concert" : "concerts"} on sale
+              </span>
             )}
           </div>
+
+          {upcoming.length === 0 ? (
+            <div className="mt-8">
+              <EmptyState message="The next concert is being announced. Sign up below for the newsletter to be the first to know." />
+            </div>
+          ) : (
+            /*
+              Every upcoming concert gets the same full-width row. Promoting
+              only the first one to "featured" left the rest as narrow
+              third-width cards, so the season read as one real event plus
+              some offcuts.
+            */
+            <div className="mt-8 space-y-6">
+              {upcoming.map((e) => (
+                <EventCard key={e.id} event={e} variant="featured" />
+              ))}
+            </div>
+          )}
+
+          <p className="mt-8 text-sm text-muted">
+            For partnership or press enquiries, write to{" "}
+            <a className="link-purple" href={`mailto:${SUPPORT_EMAIL}`}>
+              {SUPPORT_EMAIL}
+            </a>
+            .
+          </p>
         </div>
       </section>
 
-      {/* PAST */}
-      <section className="bg-cream">
-        <div className="container-edge py-14 md:py-20">
-          <div className="flex items-baseline justify-between gap-6">
-            <h2 className="font-display text-display-md text-maroon">Past</h2>
-            {past.length > 0 && (
-              <span className="smallcaps text-muted">archive</span>
-            )}
-          </div>
-          <div className="mt-8">
-            {past.length > 0 ? (
-              <EventsList events={past} />
-            ) : (
-              <EmptyState message="Past concerts will be archived here as the season fills out." />
-            )}
-          </div>
+      {/* Cross-link so the two halves of the archive stay one step apart. */}
+      <section className="border-t border-pink bg-cream">
+        <div className="container-edge flex flex-wrap items-center justify-between gap-4 py-10">
+          <p className="font-display text-xl italic text-brand-purple md:text-2xl">
+            Looking for a concert we&rsquo;ve already presented?
+          </p>
+          <Link
+            href="/events/past"
+            className="smallcaps inline-flex min-h-12 items-center gap-2 border border-maroon/70 px-6 py-3 text-maroon transition hover:bg-maroon/10"
+          >
+            Browse past events
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
         </div>
       </section>
     </>
-  );
-}
-
-function PageHeader({
-  kicker,
-  title,
-  sub,
-}: {
-  kicker: string;
-  title: string;
-  sub: string;
-}) {
-  return (
-    <section className="border-b border-pink bg-cream">
-      <div className="container-edge py-14 md:py-20">
-        <p className="kicker">{kicker}</p>
-        <Ornament className="mt-5 h-3 w-24 text-brand-purple/70" />
-        <h1 className="mt-5 font-display text-display-lg text-maroon">{title}</h1>
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink/85">{sub}</p>
-      </div>
-    </section>
-  );
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div className="border border-pink bg-cream/60 p-10 text-center md:p-14">
-      <p className="font-display text-2xl italic text-brand-purple md:text-3xl">
-        {message}
-      </p>
-    </div>
   );
 }
