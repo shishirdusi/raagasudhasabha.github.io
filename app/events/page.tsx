@@ -41,8 +41,7 @@ export default function UpcomingEventsPage() {
           </div>
 
           {UPCOMING_BANNER_ONLY ? (
-            // The archive link lives in the strip below, so skip it here.
-            <UpcomingBanner className="mt-8" showArchiveLink={false} />
+            <UpcomingBanner className="mt-8" />
           ) : upcoming.length === 0 ? (
             <div className="mt-8">
               <EmptyState message="The next concert is being announced. Sign up below for the newsletter to be the first to know." />
