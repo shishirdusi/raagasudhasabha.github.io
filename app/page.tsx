@@ -4,7 +4,9 @@ import { PillarCard } from "@/components/pillar-card";
 import { EventCard } from "@/components/event-card";
 import { Ornament } from "@/components/ornament";
 import { DonateButton } from "@/components/donate-button";
+import { UpcomingBanner } from "@/components/upcoming-banner";
 import { getUpcoming } from "@/lib/events";
+import { UPCOMING_BANNER_ONLY } from "@/lib/upcoming";
 
 export default function HomePage() {
   const upcoming = getUpcoming();
@@ -29,7 +31,9 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {upcoming.length > 0 ? (
+          {UPCOMING_BANNER_ONLY ? (
+            <UpcomingBanner />
+          ) : upcoming.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
               {upcoming.slice(0, 3).map((e) => (
                 <EventCard key={e.id} event={e} />

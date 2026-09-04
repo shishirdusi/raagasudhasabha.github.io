@@ -21,10 +21,12 @@ import {
   formatEventTime,
   type Event,
 } from "@/lib/events";
+import { UpcomingBanner } from "@/components/upcoming-banner";
 import {
   RSVP_OPEN,
   RSVP_GOOGLE_FORM_URL,
   RSVP_EVENT_LABEL,
+  UPCOMING_BANNER_ONLY,
 } from "@/lib/upcoming";
 import { SUPPORT_EMAIL } from "@/lib/commerce-config";
 
@@ -136,7 +138,14 @@ export default function EventDetailPage({ params }: Params) {
       {/* BOOKING */}
       <section className="bg-cream">
         <div className="container-edge py-12 md:py-16">
-          {ticketed ? (
+          {/*
+            While the season is held back, an upcoming concert's page must
+            not still sell tickets — otherwise a shared link contradicts the
+            "stay tuned" banner everywhere else. Past events are unaffected.
+          */}
+          {UPCOMING_BANNER_ONLY && event.status === "upcoming" ? (
+            <UpcomingBanner />
+          ) : ticketed ? (
             <TicketPicker event={event} />
           ) : (
             <BookingNotice event={event} />

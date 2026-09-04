@@ -3,8 +3,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { EventCard } from "@/components/event-card";
 import { PageHeader, EmptyState } from "@/components/page-header";
+import { UpcomingBanner } from "@/components/upcoming-banner";
 import { getUpcoming } from "@/lib/events";
 import { SUPPORT_EMAIL } from "@/lib/commerce-config";
+import { UPCOMING_BANNER_ONLY } from "@/lib/upcoming";
 
 export const metadata: Metadata = {
   title: "Upcoming Events",
@@ -29,7 +31,8 @@ export default function UpcomingEventsPage() {
             <h2 className="font-display text-display-md text-maroon">
               On our stage
             </h2>
-            {upcoming.length > 0 && (
+            {/* No "N on sale" count while the concerts are held back. */}
+            {!UPCOMING_BANNER_ONLY && upcoming.length > 0 && (
               <span className="smallcaps text-muted">
                 {upcoming.length}{" "}
                 {upcoming.length === 1 ? "concert" : "concerts"} on sale
@@ -37,7 +40,10 @@ export default function UpcomingEventsPage() {
             )}
           </div>
 
-          {upcoming.length === 0 ? (
+          {UPCOMING_BANNER_ONLY ? (
+            // The archive link lives in the strip below, so skip it here.
+            <UpcomingBanner className="mt-8" showArchiveLink={false} />
+          ) : upcoming.length === 0 ? (
             <div className="mt-8">
               <EmptyState message="The next concert is being announced. Sign up below for the newsletter to be the first to know." />
             </div>

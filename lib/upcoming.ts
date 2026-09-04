@@ -19,6 +19,22 @@
  * Setting RSVP_OPEN = false (or RSVP_GOOGLE_FORM_URL = "") hides all RSVP
  * buttons site-wide; useful between concerts.
  */
+/**
+ * Season interlude.
+ *
+ * While true, the home page and the Upcoming Events page show a single
+ * "stay tuned" banner in place of the concert posters, and unannounced
+ * concerts are kept out of the sitemap.
+ *
+ * Nothing is deleted to do this — the concerts stay in content/events.json
+ * exactly as they are, and their detail pages still build. Set this back to
+ * false to restore the posters precisely as they were.
+ */
+export const UPCOMING_BANNER_ONLY = true;
+
+export const UPCOMING_BANNER_MESSAGE =
+  "Please stay tuned for the next event!";
+
 export const RSVP_GOOGLE_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSeCNbW_niJtQP2VTVBYSFW3nDSnhGcC_JUac0TcAf83_VT88g/viewform";
 
