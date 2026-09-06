@@ -7,19 +7,39 @@ import { DonateButton } from "@/components/donate-button";
 import { UpcomingBanner } from "@/components/upcoming-banner";
 import { getUpcoming } from "@/lib/events";
 import { UPCOMING_BANNER_ONLY } from "@/lib/upcoming";
+import { cn } from "@/lib/utils";
 
 export default function HomePage() {
   const upcoming = getUpcoming();
 
   return (
     <>
-      {/* UPCOMING EVENTS */}
+      {/*
+        UPCOMING EVENTS — sits above the hero, so while there is only a
+        banner to show it shrinks to a slim strip. The welcome message
+        below is meant to lead the page, not this.
+      */}
       <section className="border-b border-pink bg-cream-deep/30">
-        <div className="container-edge py-16 md:py-24">
-          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div
+          className={cn(
+            "container-edge",
+            UPCOMING_BANNER_ONLY ? "py-6 md:py-8" : "py-16 md:py-24"
+          )}
+        >
+          <div
+            className={cn(
+              "flex flex-wrap items-end justify-between gap-4",
+              UPCOMING_BANNER_ONLY ? "mb-4" : "mb-10"
+            )}
+          >
             <div>
               <p className="kicker">On Our Stage</p>
-              <h2 className="mt-2 font-display text-display-md text-maroon">
+              <h2
+                className={cn(
+                  "mt-2 font-display text-maroon",
+                  UPCOMING_BANNER_ONLY ? "text-xl" : "text-display-md"
+                )}
+              >
                 Upcoming events
               </h2>
             </div>
@@ -32,7 +52,7 @@ export default function HomePage() {
           </div>
 
           {UPCOMING_BANNER_ONLY ? (
-            <UpcomingBanner />
+            <UpcomingBanner size="compact" />
           ) : upcoming.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
               {upcoming.slice(0, 3).map((e) => (

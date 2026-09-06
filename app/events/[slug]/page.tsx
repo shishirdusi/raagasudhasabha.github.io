@@ -32,18 +32,9 @@ import { SUPPORT_EMAIL } from "@/lib/commerce-config";
 
 type Params = { params: { slug: string } };
 
-/**
- * Reserved by the static sibling routes under /events. A static segment wins
- * over this dynamic one in Next's router, so an event with one of these ids
- * would be unreachable — better to leave it out than to emit a dead page.
- */
-const RESERVED_SLUGS = new Set(["past"]);
-
 /** Required by `output: "export"` — pre-renders one page per event. */
 export function generateStaticParams() {
-  return getAllEvents()
-    .filter((e) => !RESERVED_SLUGS.has(e.id))
-    .map((e) => ({ slug: e.id }));
+  return getAllEvents().map((e) => ({ slug: e.id }));
 }
 
 export function generateMetadata({ params }: Params): Metadata {

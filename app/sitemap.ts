@@ -10,7 +10,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pages: MetadataRoute.Sitemap = [
     "",
     "/events",
-    "/events/past",
     "/about",
     "/archive",
     "/contact",
